@@ -188,6 +188,24 @@
             animation: spin 1s linear infinite;
         }
 
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -249,8 +267,14 @@
         <div id="resultsContainer"></div>
     </div>
 
+    <footer>
+        <p>Powered by <a href="https://nominatim.openstreetmap.org/" target="_blank">Nominatim API</a></p>
+        <p>Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</p>
+        <p>© 2025 HealthHub - Medical Facility Finder</p>
+    </footer>
+
     <script>
-        // --- 1. SETTING UP THE APP'S MEMORY (STATE) ---
+        // --- 1. SETTING UP THE APP'S STATE ---
 
         // This holds all the important information for the app, like the list of found places.
         let state = {
@@ -559,7 +583,7 @@
                         Find Medical Facilities Near You
                     </h3>
                     <p style="color: #64748b; margin-bottom: 20px;">
-                        Search for hospitals, clinics, pharmacies, and other medical facilities in Rwanda
+                        Search for hospitals, clinics, pharmacies, and other medical facilities based on your exact location and preferences.
                     </p>
                     <div style="background: #f3f4f6; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto; text-align: left;">
                         <strong>How to use:</strong><br><br>
