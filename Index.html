@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthHub - Medical Facility Finder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #cffafe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #1e293b;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            color: #166534;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border: 2px solid #93c5fd;
+            color: #1e40af;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border: 2px solid #fde047;
+            color: #92400e;
+        }
+
+        .facilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .facility-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+
+        .facility-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .facility-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .detail-row {
+            margin-bottom: 12px;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .loader {
+            display: flex;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            .search-box {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HealthHub Medical Finder</h1>
+            <p style="color: #64748b; font-size: 1.2rem;">Find nearby medical facilities based on your location and preferences.</p>
+        </div>
+
+        <div class="search-card">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="facilityType">Facility Type</label>
+                    <select id="facilityType">
+                        <option value="hospital">Hospitals</option>
+                        <option value="clinic">Clinics</option>
+                        <option value="pharmacy">Pharmacies</option>
+                        <option value="dentist">Dentists</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="sortBy">Sort By</label>
+                    <select id="sortBy">
+                        <option value="distance">Distance</option>
+                        <option value="relevance">Relevance</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Enter location (e.g., Kigali, Gasabo, Rwanda)..."
+                    value="Kigali, Rwanda"
+                >
+                <button class="btn btn-primary" id="searchBtn">
+                    <span id="searchText">Search</span>
+                </button>
+            </div>
+
+            <div id="alertContainer"></div>
+        </div>
+
+        <div id="resultsContainer"></div>
+    </div>
+
+    <script>
+        // --- 1. SETTING UP THE APP'S MEMORY (STATE) ---
+
+        // This holds all the important information for the app, like the list of found places.
+        let state = {
+            facilities: [], // Where the list of hospitals/clinics will be stored
+            loading: false, // True when we are waiting for the search results
+            cache: {}, // Stores previous search results to speed things up
+            cacheMetadata: {} // Stores when those results were saved
+        };
+
+        // This is a shortcut to easily access elements on the page (like the search button)
+        const DOM = {
+            searchBtn: document.getElementById('searchBtn'),
+            searchInput: document.getElementById('searchInput'),
+            facilityType: document.getElementById('facilityType'),
+            sortBy: document.getElementById('sortBy'),
+            alertContainer: document.getElementById('alertContainer'),
+            resultsContainer: document.getElementById('resultsContainer')
+        };
+
+
+        // --- 2. USER ACTIONS (EVENT LISTENERS) ---
+
+        // When the user clicks the Search button, run the handleSearch function
+        DOM.searchBtn.addEventListener('click', handleSearch);
+
+        // If the user presses 'Enter' in the search box, run the handleSearch function
+        DOM.searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSearch();
+        });
+
+        // If the user changes the sort order (Distance/Relevance), update the results immediately
+        DOM.sortBy.addEventListener('change', () => {
+            if (state.facilities.length > 0) renderResults();
+        });
+
+
+        // --- 3. CORE API FUNCTIONS ---
+
+        // This function asks the map service (Nominatim) for the exact location (Latitude/Longitude) of the place the user typed.
+        async function getLocationCoordinates(location) {
+            const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`;
+            
+            // Send the request to the map service
+            const response = await fetch(geocodeUrl, {
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            // Check if the request failed
+            if (!response.ok) {
+                throw new Error('Failed to find location');
+            }
+            
+            const data = await response.json();
+            
+            // Check if the location was found
+            if (data.length === 0) {
+                throw new Error('Location not found');
+            }
+            
+            // Return the coordinates
+            return {
+                lat: parseFloat(data[0].lat),
+                lon: parseFloat(data[0].lon),
+                displayName: data[0].display_name
+            };
+        }
+
+        // This function searches for the actual medical facilities around the location.
+        async function searchWithNominatim(location, type, refLat, refLon) {
+            // A simple list to tell the search what word to look for based on the filter choice
+            const amenityMap = {
+                hospital: 'hospital',
+                clinic: 'clinic',
+                pharmacy: 'pharmacy',
+                dentist: 'dentist'
+            };
+            
+            const amenity = amenityMap[type];
+            // Build the search query, e.g., "hospital in Kigali, Rwanda"
+            const searchQuery = (type === 'clinic') ? `clinic or doctors in ${location}` : `${amenity} in ${location}`;
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=30&addressdetails=1&extratags=1`;
+            
+            // Send the request to the map service
+            const response = await fetch(url, {
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.length === 0) return [];
+            
+            // Go through all the results and format them into a cleaner list
+            return data.map(place => ({
+                id: place.place_id,
+                // Get the best name available, prioritizing the official name tag
+                name: place.extratags?.name || place.display_name.split(',')[0] || 'Medical Facility', 
+                address: formatAddress(place.address),
+                fullAddress: place.display_name,
+                phone: place.extratags?.phone || place.extratags?.['contact:phone'] || 'Not available',
+                website: place.extratags?.website || place.extratags?.['contact:website'] || null,
+                type: place.type || type,
+                lat: parseFloat(place.lat),
+                lon: parseFloat(place.lon),
+                // Calculate how far away the facility is from the user's searched location
+                distance: calculateDistance(refLat, refLon, parseFloat(place.lat), parseFloat(place.lon)),
+                importance: place.importance,
+                district: place.address?.state_district || place.address?.county || 'Rwanda'
+            }));
+        }
+
+
+        // --- 4. HELPER FUNCTIONS ---
+
+        // Cleans up the raw address data into a simple street/city format
+        function formatAddress(addressObj) {
+            if (!addressObj) return 'Address not available';
+            const parts = [];
+            if (addressObj.road) parts.push(addressObj.road);
+            if (addressObj.suburb) parts.push(addressObj.suburb);
+            if (addressObj.city) parts.push(addressObj.city);
+            return parts.length > 0 ? parts.join(', ') : 'Rwanda';
+        }
+
+        // Uses a math formula to calculate the distance between two points on Earth (in kilometers)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in kilometers
+            // ... a math formula to calculate distance ...
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                        Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return (R * c).toFixed(2); // Distance rounded to two decimal places
+        }
+
+        // --- 5. CACHING FUNCTIONS (for speed) ---
+
+        // Creates a unique key to save/find search results (e.g., "kigali,rwanda-hospital")
+        function getCacheKey(location, type) {
+            return `${location.toLowerCase().trim()}-${type}`;
+        }
+
+        // Checks if a saved search result is recent enough (less than 10 minutes old)
+        function isCacheValid(cacheKey) {
+            const metadata = state.cacheMetadata[cacheKey];
+            if (!metadata) return false;
+            const CACHE_DURATION = 600000; // 10 minutes in milliseconds
+            return (Date.now() - metadata.timestamp) < CACHE_DURATION;
+        }
+
+        // Saves the search results to the memory (cache)
+        function saveToCache(cacheKey, data) {
+            state.cache[cacheKey] = data;
+            state.cacheMetadata[cacheKey] = {
+                timestamp: Date.now()
+            };
+        }
+
+        // Tries to load search results from the memory (cache)
+        function getFromCache(cacheKey) {
+            if (state.cache[cacheKey] && isCacheValid(cacheKey)) {
+                return state.cache[cacheKey];
+            }
+            return null;
+        }
+
+        // --- 6. MAIN LOGIC AND RENDERING ---
+
+        // The main function that runs when the user hits 'Search'
+        async function handleSearch() {
+            const location = DOM.searchInput.value.trim();
+            
+            if (!location) {
+                showAlert('Please enter a location', 'warning');
+                return;
+            }
+
+            const cacheKey = getCacheKey(location, DOM.facilityType.value);
+            
+            // 1. CHECK CACHE: See if we've run this exact search recently
+            const cachedData = getFromCache(cacheKey);
+            if (cachedData) {
+                state.facilities = cachedData;
+                showAlert(`Loaded ${cachedData.length} facilities near ${location} from cache.`, 'success');
+                renderResults();
+                return;
+            }
+
+            // 2. START NEW SEARCH: Show loading states
+            state.loading = true;
+            updateButtonState(true); // Disable button and show 'Searching...'
+            clearAlerts();
+            showLoader(); // Show the spinning icon
+
+            try {
+                showAlert('Searching for facilities...', 'info');
+                
+                // First, find the coordinates of the search location
+                const locationCoords = await getLocationCoordinates(location);
+                
+                // Second, search for facilities using those coordinates
+                const facilities = await searchWithNominatim(
+                    location, 
+                    DOM.facilityType.value,
+                    locationCoords.lat,
+                    locationCoords.lon
+                );
+                
+                state.facilities = facilities;
+                
+                // Save results to cache if any were found
+                if (facilities.length > 0) {
+                    saveToCache(cacheKey, facilities);
+                }
+                
+                // Show the final result message
+                if (facilities.length === 0) {
+                    showAlert(`No ${DOM.facilityType.value}s found. Try a different location.`, 'warning');
+                } else {
+                    showAlert(`Found ${facilities.length} facilities near ${location}`, 'success');
+                }
+                
+                renderResults();
+                
+            } catch (error) {
+                // If anything goes wrong, show a clear error message
+                showAlert(`Error: ${error.message}. Please check the location spelling.`, 'warning');
+            } finally {
+                // Always reset the loading state whether successful or not
+                state.loading = false;
+                updateButtonState(false);
+            }
+        }
+
+        // This function takes the final list of facilities, sorts them, and creates the HTML cards.
+        function renderResults() {
+            if (state.facilities.length === 0) {
+                renderEmptyState();
+                return;
+            }
+
+            let sorted = [...state.facilities];
+            // Sort the list based on the user's choice (Distance or Relevance)
+            if (DOM.sortBy.value === 'distance') {
+                sorted.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+            } else {
+                sorted.sort((a, b) => (b.importance || 0) - (a.importance || 0));
+            }
+
+            // Build the HTML code for all the facility cards
+            const html = `
+                <div style="color: #64748b; margin-bottom: 20px; font-size: 1rem;">
+                    Showing ${sorted.length} ${DOM.facilityType.value}s near ${DOM.searchInput.value}
+                </div>
+                <div class="facilities-grid">
+                    ${sorted.map(facility => `
+                        <div class="facility-card">
+                            <div class="facility-name">${facility.name}</div>
+
+                            <div class="detail-row">
+                                <strong>Address:</strong> ${facility.address}
+                                ${facility.district !== 'Rwanda' ? 
+                                    `<div style="font-size: 0.75rem; color: #6b7280; margin-top: 3px;">
+                                        ${facility.district}
+                                    </div>` : ''}
+                            </div>
+
+                            <div class="detail-row">
+                                <strong>Phone:</strong> ${facility.phone}
+                            </div>
+
+                            <div class="detail-row">
+                                <strong>Distance:</strong> ${facility.distance} km from search location
+                            </div>
+
+                            ${facility.website && facility.website !== 'Not available' ? `
+                                <div class="detail-row">
+                                    <strong>Website:</strong> <a href="${facility.website.startsWith('http') ? facility.website : 'https://' + facility.website}" target="_blank" style="color: #3b82f6;">${facility.website}</a>
+                                </div>
+                            ` : ''}
+
+                            <button 
+                                onclick="window.open('http://maps.google.com/maps?q=$${facility.lat},${facility.lon}', '_blank')"
+                                style="width: 100%; margin-top: 15px; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                                View on Map / Get Directions
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Display the new HTML content
+            DOM.resultsContainer.innerHTML = html;
+        }
+
+        // Shows a friendly message when no search results are available
+        function renderEmptyState() {
+            DOM.resultsContainer.innerHTML = `
+                <div style="background: white; border-radius: 15px; padding: 60px 40px; text-align: center;">
+                    <h3 style="font-size: 1.5rem; color: #1e293b; margin-bottom: 10px;">
+                        Find Medical Facilities Near You
+                    </h3>
+                    <p style="color: #64748b; margin-bottom: 20px;">
+                        Search for hospitals, clinics, pharmacies, and other medical facilities in Rwanda
+                    </p>
+                    <div style="background: #f3f4f6; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto; text-align: left;">
+                        <strong>How to use:</strong><br><br>
+                        1. Enter a location (e.g., Kigali, Gasabo, Nyarugenge)<br>
+                        2. Select the type of facility you're looking for<br>
+                        3. Click "Search" to find nearby facilities<br>
+                        4. View distances, contact information, and get directions<br><br>
+                        <strong>Try searching for "Kigali, Rwanda" to get started!</strong>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Shows the spinning circle while loading
+        function showLoader() {
+            DOM.resultsContainer.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+        }
+
+        // Shows a colored notification message at the top of the search box
+        function showAlert(message, type) {
+            DOM.alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    <span>${message}</span>
+                </div>
+            `;
+            // Clear the message after 5 seconds
+            if (type !== 'warning') {
+                setTimeout(clearAlerts, 5000);
+            }
+        }
+
+        // Removes the notification message
+        function clearAlerts() {
+            DOM.alertContainer.innerHTML = '';
+        }
+
+        // Changes the search button text and disables it during a search
+        function updateButtonState(loading) {
+            DOM.searchBtn.disabled = loading;
+            document.getElementById('searchText').textContent = loading ? 'Searching...' : 'Search';
+        }
+
+        // --- 7. START THE APP ---
+        renderEmptyState(); // Show the welcome message when the page first loads
+    </script>
+</body>
+</html>
