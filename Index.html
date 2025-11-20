@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find nearby medical facilities in Rwanda - hospitals, clinics, pharmacies, and dentists">
     <title>HealthHub - Medical Facility Finder</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Reset & Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -12,10 +15,12 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #e0f2fe 0%, #cffafe 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #1e293b;
+            line-height: 1.6;
         }
 
         .container {
@@ -23,92 +28,187 @@
             margin: 0 auto;
         }
 
+        /* Header */
         .header {
             text-align: center;
             margin-bottom: 40px;
+            padding: 20px 0;
         }
 
         .header h1 {
-            color: #1e293b;
-            font-size: 2.5rem;
+            color: #1e40af;
+            font-size: 2.8rem;
             margin-bottom: 10px;
+            font-weight: 700;
         }
 
+        .header-subtitle {
+            color: #64748b;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Search Card */
         .search-card {
             background: white;
             border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
         }
 
+        /* Filters */
         .filters-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .filter-group {
+            position: relative;
         }
 
         .filter-group label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
             color: #374151;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .filter-group select {
+        .filter-group select, .filter-group input[type="number"] {
             width: 100%;
-            padding: 10px 15px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
+        .filter-group select:hover, .filter-group input:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Search Box */
         .search-box {
             display: flex;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 25px;
+            align-items: stretch;
+        }
+
+        .search-input-container {
+            flex: 1;
+            position: relative;
         }
 
         .search-input {
-            flex: 1;
-            padding: 15px 20px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 1.1rem;
+            transition: all 0.3s ease;
         }
 
+        .search-input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 1.2rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .search-input:focus + .search-input-icon {
+            color: #3b82f6;
+        }
+
+        /* Buttons */
         .btn {
-            padding: 15px 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 24px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            white-space: nowrap;
         }
 
         .btn-primary {
-            background: #3b82f6;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
         .btn-primary:hover:not(:disabled) {
-            background: #2563eb;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8fafc;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
         }
 
         .btn:disabled {
-            background: #9ca3af;
+            background: #e2e8f0;
+            color: #9ca3af;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Alerts */
         .alert {
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-top: 15px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-weight: 500;
             animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         @keyframes slideIn {
@@ -140,43 +240,276 @@
             color: #92400e;
         }
 
+        .alert-error {
+            background: #fee2e2;
+            border: 2px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        /* Cache indicator */
+        .cache-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 8px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Results Header */
+        .results-header {
+            color: #64748b;
+            margin-bottom: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        /* Search within results */
+        .search-results-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .search-results-input {
+            flex: 1;
+            padding: 12px 16px 12px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        /* Facilities Grid */
         .facilities-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 25px;
         }
 
+        /* Facility Cards */
         .facility-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 16px;
             padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid #e5e7eb;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .facility-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+
+
+        .favorite-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #9ca3af;
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.1);
+            color: #e11d48;
+        }
+
+        .favorite-btn.favorited {
+            color: #e11d48;
+        }
+
+        .favorite-btn.favorited:hover {
+            color: #dc2626;
+            transform: scale(1.1);
         }
 
         .facility-name {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #1e293b;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            padding-right: 40px;
+            line-height: 1.4;
         }
 
         .detail-row {
-            margin-bottom: 12px;
-            font-size: 0.875rem;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+            color: #374151;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+
+
+        .detail-row strong {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .detail-row a {
+            color: #3b82f6;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .detail-row a:hover {
+            text-decoration: underline;
+        }
+
+        .district-info {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .map-button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .map-button:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Recent Searches */
+        .recent-searches {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .recent-searches h4 {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .clear-history-btn {
+            background: none;
+            border: 1px solid #d1d5db;
+            color: #64748b;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clear-history-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
             color: #374151;
         }
 
+        .search-history-items {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .history-item {
+            padding: 8px 14px;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-item:hover {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* Loading State */
         .loader {
             display: flex;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
             padding: 80px 20px;
+            gap: 20px;
         }
 
         .spinner {
@@ -188,50 +521,225 @@
             animation: spin 1s linear infinite;
         }
 
+        @keyframes spin {
+            to { 
+                transform: rotate(360deg); 
+            }
+        }
+
+        .loader-text {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+
+
+        .empty-state h3 {
+            font-size: 1.6rem;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .instructions-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 650px;
+            margin: 0 auto;
+            text-align: left;
+            line-height: 1.8;
+            border: 1px solid #e2e8f0;
+        }
+
+        .instructions-box strong {
+            color: #1e293b;
+        }
+
+        .instruction-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .step-number {
+            background: #3b82f6;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 40px;
+        }
+
+        .pagination button {
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-info {
+            color: #64748b;
+            font-size: 0.95rem;
+            padding: 0 15px;
+        }
+
         footer {
             text-align: center;
-            padding: 30px;
+            padding: 40px 20px;
             color: #64748b;
             font-size: 0.875rem;
+            margin-top: 50px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        footer p {
+            margin-bottom: 8px;
             font-weight: 500;
-            margin-top: 40px;
         }
 
         footer a {
             color: #3b82f6;
             text-decoration: none;
+            font-weight: 500;
         }
 
         footer a:hover {
             text-decoration: underline;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
+        /* Responsive Design */
         @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header-subtitle {
+                font-size: 1rem;
+            }
+
             .filters-grid {
                 grid-template-columns: 1fr;
             }
+            
             .search-box {
                 flex-direction: column;
+            }
+
+            .search-card {
+                padding: 25px;
+            }
+
+            .facilities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .empty-state {
+                padding: 40px 25px;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.9rem;
+            }
+
+            .facility-card {
+                padding: 20px;
+            }
+
+            .search-card {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>HealthHub Medical Finder</h1>
-            <p style="color: #64748b; font-size: 1.2rem;">Find nearby medical facilities based on your location and preferences.</p>
-        </div>
+        <!-- Header Section -->
+        <header class="header">
+            <h1>
+                HealthHub Medical Finder
+            </h1>
+            <p class="header-subtitle">Find nearby medical facilities across Rwanda with comprehensive information and real-time data</p>
+        </header>
 
-        <div class="search-card">
+        <!-- Search and Filter Card -->
+        <section class="search-card">
+            <!-- Filter Options -->
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label for="facilityType">Facility Type</label>
-                    <select id="facilityType">
+                    <label for="facilityType">
+                        Facility Type
+                    </label>
+                    <select id="facilityType" aria-label="Select facility type">
                         <option value="hospital">Hospitals</option>
                         <option value="clinic">Clinics</option>
                         <option value="pharmacy">Pharmacies</option>
@@ -240,101 +748,244 @@
                 </div>
 
                 <div class="filter-group">
-                    <label for="sortBy">Sort By</label>
-                    <select id="sortBy">
-                        <option value="distance">Distance</option>
+                    <label for="sortBy">
+                        Sort By
+                    </label>
+                    <select id="sortBy" aria-label="Sort results by">
+                        <option value="distance">Distance (Nearest First)</option>
                         <option value="relevance">Relevance</option>
                     </select>
                 </div>
+
+                <div class="filter-group">
+                    <label for="maxDistance">
+                        Max Distance (km)
+                    </label>
+                    <input type="number" id="maxDistance" min="1" max="100" value="50" aria-label="Maximum distance in kilometers">
+                </div>
             </div>
 
+            <!-- Search Box -->
             <div class="search-box">
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    class="search-input" 
-                    placeholder="Enter location (e.g., Kigali, Gasabo, Rwanda)..."
-                    value="Kigali, Rwanda"
-                >
-                <button class="btn btn-primary" id="searchBtn">
+                <div class="search-input-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Enter location in Rwanda (e.g., Kigali, Gasabo, Nyarugenge)..."
+                        aria-label="Enter search location"
+                    >
+                    <i class="fas fa-search search-input-icon"></i>
+                </div>
+                <button class="btn btn-primary" id="searchBtn" aria-label="Search for facilities">
+                    <i class="fas fa-search"></i>
                     <span id="searchText">Search</span>
                 </button>
             </div>
 
-            <div id="alertContainer"></div>
-        </div>
+            <!-- Button Group -->
+            <div class="btn-group">
+                <button class="btn btn-secondary" id="viewFavoritesBtn">
+                    View Favorites
+                </button>
+                <button class="btn btn-secondary" id="clearFiltersBtn">
+                    Clear Filters
+                </button>
+            </div>
 
-        <div id="resultsContainer"></div>
+            <!-- Progress Bar -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Initializing search...
+                </div>
+            </div>
+
+            <!-- Recent Searches -->
+            <div class="recent-searches" id="recentSearches" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h4>Recent Searches</h4>
+                    <button class="clear-history-btn" onclick="clearSearchHistory()" aria-label="Clear search history">
+                        Clear All
+                    </button>
+                </div>
+                <div class="search-history-items" id="searchHistoryItems"></div>
+            </div>
+
+            <!-- Alert Container for Messages -->
+            <div id="alertContainer" role="alert" aria-live="polite"></div>
+        </section>
+
+        <!-- Results Container -->
+        <main id="resultsContainer"></main>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination" style="display: none;">
+            <button id="prevPage">
+                <i class="fas fa-chevron-left"></i>
+                Previous
+            </button>
+            <span class="page-info" id="pageInfo">Page 1</span>
+            <button id="nextPage">
+                Next
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
     </div>
 
+    <!-- Footer with Attribution -->
     <footer>
-        <p>Powered by <a href="https://nominatim.openstreetmap.org/" target="_blank">Nominatim API</a></p>
-        <p>Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</p>
-        <p>© 2025 HealthHub - Medical Facility Finder</p>
+        <p>Powered by <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener noreferrer">Nominatim API</a> & 
+        <a href="https://openweathermap.org/" target="_blank" rel="noopener noreferrer">OpenWeatherMap API</a></p>
+        <p>Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors</p>
+        <p>© 2025 HealthHub - Medical Facility Finder | Your Healthcare matters to us!!</p>
     </footer>
 
     <script>
-        // --- 1. SETTING UP THE APP'S STATE ---
-
-        // This holds all the important information for the app, like the list of found places.
+        /** Application state management */
         let state = {
-            facilities: [], // Where the list of hospitals/clinics will be stored
-            loading: false, // True when we are waiting for the search results
-            cache: {}, // Stores previous search results to speed things up
-            cacheMetadata: {} // Stores when those results were saved
+            facilities: [],
+            filteredFacilities: [],
+            loading: false,
+            cache: {},
+            favorites: JSON.parse(localStorage.getItem('healthhub_favorites') || '[]'),
+            searchHistory: JSON.parse(localStorage.getItem('healthhub_history') || '[]'),
+            currentPage: 1,
+            itemsPerPage: 9,
+            retryCount: 0,
+            maxRetries: 3
         };
 
-        // This is a shortcut to easily access elements on the page (like the search button)
+        /** DOM element references for performance optimization */
         const DOM = {
             searchBtn: document.getElementById('searchBtn'),
             searchInput: document.getElementById('searchInput'),
             facilityType: document.getElementById('facilityType'),
             sortBy: document.getElementById('sortBy'),
+            maxDistance: document.getElementById('maxDistance'),
             alertContainer: document.getElementById('alertContainer'),
-            resultsContainer: document.getElementById('resultsContainer')
+            resultsContainer: document.getElementById('resultsContainer'),
+            viewFavoritesBtn: document.getElementById('viewFavoritesBtn'),
+            clearFiltersBtn: document.getElementById('clearFiltersBtn'),
+            recentSearches: document.getElementById('recentSearches'),
+            searchHistoryItems: document.getElementById('searchHistoryItems'),
+            progressContainer: document.getElementById('progressContainer'),
+            progressFill: document.getElementById('progressFill'),
+            progressText: document.getElementById('progressText'),
+            pagination: document.getElementById('pagination'),
+            prevPage: document.getElementById('prevPage'),
+            nextPage: document.getElementById('nextPage'),
+            pageInfo: document.getElementById('pageInfo')
         };
 
+        /** Application configuration constants */
+        const CONFIG = {
+            CACHE_DURATION: 600000,
+            USER_AGENT: 'HealthHub-Medical-Finder/2.0 (Professional Healthcare Directory)',
+            TIMEOUT: 10000
+        };
 
-        // --- 2. USER ACTIONS (EVENT LISTENERS) ---
-
-        // When the user clicks the Search button, run the handleSearch function
+        /** Event listener initialization */
         DOM.searchBtn.addEventListener('click', handleSearch);
-
-        // If the user presses 'Enter' in the search box, run the handleSearch function
         DOM.searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') handleSearch();
         });
-
-        // If the user changes the sort order (Distance/Relevance), update the results immediately
         DOM.sortBy.addEventListener('change', () => {
-            if (state.facilities.length > 0) renderResults();
+            if (state.facilities.length > 0) applyFiltersAndRender();
         });
+        DOM.maxDistance.addEventListener('change', () => {
+            if (state.facilities.length > 0) applyFiltersAndRender();
+        });
+        DOM.viewFavoritesBtn.addEventListener('click', showFavorites);
+        DOM.clearFiltersBtn.addEventListener('click', clearFilters);
+        DOM.prevPage.addEventListener('click', () => changePage(-1));
+        DOM.nextPage.addEventListener('click', () => changePage(1));
 
+        /** Progress indicator management */
+        function updateProgress(percent, message) {
+            DOM.progressContainer.style.display = 'block';
+            DOM.progressFill.style.width = `${percent}%`;
+            DOM.progressText.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${message}`;
+        }
 
-        // --- 3. CORE API FUNCTIONS ---
+        function hideProgress() {
+            DOM.progressContainer.style.display = 'none';
+            DOM.progressFill.style.width = '0%';
+        }
 
-        // This function asks the map service (Nominatim) for the exact location (Latitude/Longitude) of the place the user typed.
-        async function getLocationCoordinates(location) {
-            const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`;
-            
-            // Send the request to the map service
-            const response = await fetch(geocodeUrl, {
-                headers: { 'Accept': 'application/json' }
-            });
-            
-            // Check if the request failed
-            if (!response.ok) {
-                throw new Error('Failed to find location');
+        /** HTTP request handler with timeout and retry logic */
+        async function fetchWithTimeout(url, timeout = CONFIG.TIMEOUT) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(url, {
+                    signal: controller.signal,
+                    headers: {
+                        'Accept': 'application/json',
+                        'User-Agent': CONFIG.USER_AGENT
+                    }
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                state.retryCount = 0; // Reset retry count on success
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timeout. Please check your connection.');
+                }
+                
+                // Retry logic
+                if (state.retryCount < state.maxRetries) {
+                    state.retryCount++;
+                    showAlert(`Connection issue. Retrying (${state.retryCount}/${state.maxRetries})...`, 'warning');
+                    await new Promise(resolve => setTimeout(resolve, 1000 * state.retryCount));
+                    return fetchWithTimeout(url, timeout);
+                }
+                
+                throw error;
+            }
+        }
+
+        /** Input validation and sanitization */
+        function validateInput(input) {
+            if (!input || input.trim().length < 2) {
+                return { valid: false, message: 'Please enter at least 2 characters' };
             }
             
+            // Remove special characters that could cause issues
+            const sanitized = input.replace(/[<>"'\\\/]/g, '').trim();
+            
+            if (sanitized.length === 0) {
+                return { valid: false, message: 'Please enter valid location characters' };
+            }
+            
+            return { valid: true, sanitized };
+        }
+
+
+
+        /** Geocoding service integration */
+        async function getLocationCoordinates(location) {
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location + ' Rwanda')}&format=json&limit=1&countrycodes=rw`;
+            
+            const response = await fetchWithTimeout(url);
             const data = await response.json();
             
-            // Check if the location was found
-            if (data.length === 0) {
-                throw new Error('Location not found');
+            if (!data || data.length === 0) {
+                throw new Error('We couldn\'t find that location in Rwanda. Please try searching for places within Rwanda such as Kigali, Butare, Gisenyi, Ruhengeri, or Muhanga.');
             }
             
-            // Return the coordinates
             return {
                 lat: parseFloat(data[0].lat),
                 lon: parseFloat(data[0].lon),
@@ -342,9 +993,8 @@
             };
         }
 
-        // This function searches for the actual medical facilities around the location.
-        async function searchWithNominatim(location, type, refLat, refLon) {
-            // A simple list to tell the search what word to look for based on the filter choice
+        /** Medical facility search API integration */
+        async function searchMedicalFacilities(location, type, refLat, refLon) {
             const amenityMap = {
                 hospital: 'hospital',
                 clinic: 'clinic',
@@ -353,28 +1003,19 @@
             };
             
             const amenity = amenityMap[type];
-            // Build the search query, e.g., "hospital in Kigali, Rwanda"
-            const searchQuery = (type === 'clinic') ? `clinic or doctors in ${location}` : `${amenity} in ${location}`;
-            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=30&addressdetails=1&extratags=1`;
+            const searchQuery = `${amenity} in ${location} Rwanda`;
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=50&addressdetails=1&extratags=1&countrycodes=rw`;
             
-            // Send the request to the map service
-            const response = await fetch(url, {
-                headers: { 'Accept': 'application/json' }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`API Error: ${response.status}`);
-            }
-            
+            const response = await fetchWithTimeout(url);
             const data = await response.json();
             
-            if (data.length === 0) return [];
+            if (!data || data.length === 0) {
+                return [];
+            }
             
-            // Go through all the results and format them into a cleaner list
             return data.map(place => ({
                 id: place.place_id,
-                // Get the best name available, prioritizing the official name tag
-                name: place.extratags?.name || place.display_name.split(',')[0] || 'Medical Facility', 
+                name: extractFacilityName(place, type),
                 address: formatAddress(place.address),
                 fullAddress: place.display_name,
                 phone: place.extratags?.phone || place.extratags?.['contact:phone'] || 'Not available',
@@ -382,252 +1023,533 @@
                 type: place.type || type,
                 lat: parseFloat(place.lat),
                 lon: parseFloat(place.lon),
-                // Calculate how far away the facility is from the user's searched location
                 distance: calculateDistance(refLat, refLon, parseFloat(place.lat), parseFloat(place.lon)),
-                importance: place.importance,
+                importance: place.importance || 0,
                 district: place.address?.state_district || place.address?.county || 'Rwanda'
             }));
         }
 
+        function extractFacilityName(place, type) {
+            let name = place.name || place.display_name.split(',')[0] || 'Medical Facility';
+            
+            if (name.match(/^\d+/) || name.includes('Avenue') || name.includes('Street')) {
+                name = place.extratags?.name || `${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            }
 
-        // --- 4. HELPER FUNCTIONS ---
+            return name;
+        }
 
-        // Cleans up the raw address data into a simple street/city format
         function formatAddress(addressObj) {
             if (!addressObj) return 'Address not available';
+            
             const parts = [];
             if (addressObj.road) parts.push(addressObj.road);
             if (addressObj.suburb) parts.push(addressObj.suburb);
             if (addressObj.city) parts.push(addressObj.city);
+            
             return parts.length > 0 ? parts.join(', ') : 'Rwanda';
         }
 
-        // Uses a math formula to calculate the distance between two points on Earth (in kilometers)
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth's radius in kilometers
-            // ... a math formula to calculate distance ...
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
+            
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                        Math.sin(dLon/2) * Math.sin(dLon/2);
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return (R * c).toFixed(2); // Distance rounded to two decimal places
+            const distance = R * c;
+            
+            return distance.toFixed(2);
         }
 
-        // --- 5. CACHING FUNCTIONS (for speed) ---
-
-        // Creates a unique key to save/find search results (e.g., "kigali,rwanda-hospital")
         function getCacheKey(location, type) {
             return `${location.toLowerCase().trim()}-${type}`;
         }
 
-        // Checks if a saved search result is recent enough (less than 10 minutes old)
         function isCacheValid(cacheKey) {
-            const metadata = state.cacheMetadata[cacheKey];
-            if (!metadata) return false;
-            const CACHE_DURATION = 600000; // 10 minutes in milliseconds
-            return (Date.now() - metadata.timestamp) < CACHE_DURATION;
+            const cached = state.cache[cacheKey];
+            if (!cached) return false;
+            
+            const age = Date.now() - cached.timestamp;
+            return age < CONFIG.CACHE_DURATION;
         }
 
-        // Saves the search results to the memory (cache)
         function saveToCache(cacheKey, data) {
-            state.cache[cacheKey] = data;
-            state.cacheMetadata[cacheKey] = {
+            state.cache[cacheKey] = {
+                data: data,
                 timestamp: Date.now()
             };
         }
 
-        // Tries to load search results from the memory (cache)
         function getFromCache(cacheKey) {
-            if (state.cache[cacheKey] && isCacheValid(cacheKey)) {
-                return state.cache[cacheKey];
+            if (isCacheValid(cacheKey)) {
+                return state.cache[cacheKey].data;
             }
             return null;
         }
 
-        // --- 6. MAIN LOGIC AND RENDERING ---
-
-        // The main function that runs when the user hits 'Search'
-        async function handleSearch() {
-            const location = DOM.searchInput.value.trim();
+        /** Search history management */
+        function saveToHistory(location, type) {
+            const historyItem = {
+                location,
+                type,
+                timestamp: Date.now()
+            };
             
-            if (!location) {
-                showAlert('Please enter a location', 'warning');
+            // Remove duplicates and keep last 5
+            state.searchHistory = state.searchHistory.filter(
+                item => !(item.location === location && item.type === type)
+            );
+            state.searchHistory.unshift(historyItem);
+            state.searchHistory = state.searchHistory.slice(0, 5);
+            
+            localStorage.setItem('healthhub_history', JSON.stringify(state.searchHistory));
+            renderSearchHistory();
+        }
+
+        /** Search history UI rendering */
+        function renderSearchHistory() {
+            if (state.searchHistory.length === 0) {
+                DOM.recentSearches.style.display = 'none';
+                return;
+            }
+            
+            DOM.recentSearches.style.display = 'block';
+            DOM.searchHistoryItems.innerHTML = state.searchHistory.map(item => 
+                `<div class="history-item" onclick="repeatSearch('${escapeHtml(item.location)}', '${item.type}')">
+                    ${escapeHtml(item.location)} (${item.type})
+                </div>`
+            ).join('');
+        }
+
+        /** Clear search history data and UI */
+        function clearSearchHistory() {
+            state.searchHistory = [];
+            localStorage.removeItem('healthhub_history');
+            DOM.recentSearches.style.display = 'none';
+        }
+
+        /** Execute search from history item */
+        function repeatSearch(location, type) {
+            DOM.searchInput.value = location;
+            DOM.facilityType.value = type;
+            handleSearch();
+        }
+
+        /** Primary search execution handler */
+        async function handleSearch() {
+            const validation = validateInput(DOM.searchInput.value);
+            if (!validation.valid) {
+                showAlert(validation.message, 'warning');
                 return;
             }
 
+            const location = validation.sanitized;
             const cacheKey = getCacheKey(location, DOM.facilityType.value);
-            
-            // 1. CHECK CACHE: See if we've run this exact search recently
             const cachedData = getFromCache(cacheKey);
+            
             if (cachedData) {
                 state.facilities = cachedData;
-                showAlert(`Loaded ${cachedData.length} facilities near ${location} from cache.`, 'success');
-                renderResults();
+                const cacheAge = Math.round((Date.now() - state.cache[cacheKey].timestamp) / 60000);
+                const facilityTypeText = DOM.facilityType.value === 'hospital' ? 'hospitals' : 
+                                       DOM.facilityType.value === 'clinic' ? 'clinics' : 
+                                       DOM.facilityType.value === 'pharmacy' ? 'pharmacies' : 'dental facilities';
+                showAlert(`Successfully located ${cachedData.length} ${facilityTypeText} in ${location} <span class="cache-indicator"><i class="fas fa-database"></i> Cached ${cacheAge} min ago</span>`, 'success');
+                applyFiltersAndRender();
+                saveToHistory(location, DOM.facilityType.value);
                 return;
             }
 
-            // 2. START NEW SEARCH: Show loading states
             state.loading = true;
-            updateButtonState(true); // Disable button and show 'Searching...'
+            updateButtonState(true);
             clearAlerts();
-            showLoader(); // Show the spinning icon
+            showLoader();
 
             try {
-                showAlert('Searching for facilities...', 'info');
+                updateProgress(20, 'Validating location...');
+                await new Promise(resolve => setTimeout(resolve, 300));
                 
-                // First, find the coordinates of the search location
+                updateProgress(40, 'Finding location coordinates...');
                 const locationCoords = await getLocationCoordinates(location);
                 
-                // Second, search for facilities using those coordinates
-                const facilities = await searchWithNominatim(
-                    location, 
+                updateProgress(60, 'Searching for facilities...');
+                const facilities = await searchMedicalFacilities(
+                    location,
                     DOM.facilityType.value,
                     locationCoords.lat,
                     locationCoords.lon
                 );
                 
+                updateProgress(80, 'Processing results...');
+                
+                updateProgress(100, 'Complete!');
+                
                 state.facilities = facilities;
                 
-                // Save results to cache if any were found
                 if (facilities.length > 0) {
                     saveToCache(cacheKey, facilities);
+                    saveToHistory(location, DOM.facilityType.value);
                 }
                 
-                // Show the final result message
-                if (facilities.length === 0) {
-                    showAlert(`No ${DOM.facilityType.value}s found. Try a different location.`, 'warning');
+                // Extract location details from API response
+                const locationDetails = locationCoords.displayName || location;
+                const locationParts = locationDetails.split(',');
+                let formattedLocation = location;
+                
+                // Try to format location with district info if available
+                if (locationParts.length > 1) {
+                    const area = locationParts[0].trim();
+                    const district = locationParts[1]?.trim();
+                    if (district && district !== 'Rwanda') {
+                        formattedLocation = `${area}, ${district}, Rwanda`;
+                    } else {
+                        formattedLocation = `${area}, Rwanda`;
+                    }
                 } else {
-                    showAlert(`Found ${facilities.length} facilities near ${location}`, 'success');
+                    formattedLocation = `${location}, Rwanda`;
                 }
                 
-                renderResults();
+                if (facilities.length === 0) {
+                    showAlert(
+                        `No ${DOM.facilityType.value}s found in ${formattedLocation}. Please try searching a larger area or different facility type.`,
+                        'warning'
+                    );
+                } else {
+                    const facilityTypeText = DOM.facilityType.value === 'hospital' ? 'hospitals' : 
+                                           DOM.facilityType.value === 'clinic' ? 'clinics' : 
+                                           DOM.facilityType.value === 'pharmacy' ? 'pharmacies' : 'dental facilities';
+                    showAlert(`Successfully located ${facilities.length} ${facilityTypeText} in ${formattedLocation}`, 'success');
+                }
+                
+                applyFiltersAndRender();
                 
             } catch (error) {
-                // If anything goes wrong, show a clear error message
-                showAlert(`Error: ${error.message}. Please check the location spelling.`, 'warning');
+                console.error('Search error:', error);
+                const errorMsg = error.message || 'Unable to complete search. Please try again.';
+                showAlert(`<i class="fas fa-exclamation-triangle"></i> Error: ${errorMsg}`, 'error');
+                renderEmptyState();
             } finally {
-                // Always reset the loading state whether successful or not
                 state.loading = false;
                 updateButtonState(false);
+                hideProgress();
             }
         }
 
-        // This function takes the final list of facilities, sorts them, and creates the HTML cards.
+        /** Filter application and result rendering */
+        function applyFiltersAndRender() {
+            const maxDist = parseFloat(DOM.maxDistance.value);
+            
+            state.filteredFacilities = state.facilities.filter(f => 
+                parseFloat(f.distance) <= maxDist
+            );
+            
+            state.currentPage = 1;
+            renderResults();
+        }
+
+        /** Search results rendering with pagination */
         function renderResults() {
-            if (state.facilities.length === 0) {
+            if (state.filteredFacilities.length === 0) {
                 renderEmptyState();
+                DOM.pagination.style.display = 'none';
                 return;
             }
 
-            let sorted = [...state.facilities];
-            // Sort the list based on the user's choice (Distance or Relevance)
+            let sortedFacilities = state.filteredFacilities.slice();
+            
             if (DOM.sortBy.value === 'distance') {
-                sorted.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+                sortedFacilities.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
             } else {
-                sorted.sort((a, b) => (b.importance || 0) - (a.importance || 0));
+                sortedFacilities.sort((a, b) => b.importance - a.importance);
             }
 
-            // Build the HTML code for all the facility cards
+            // Pagination
+            const totalPages = Math.ceil(sortedFacilities.length / state.itemsPerPage);
+            const startIdx = (state.currentPage - 1) * state.itemsPerPage;
+            const endIdx = startIdx + state.itemsPerPage;
+            const paginatedFacilities = sortedFacilities.slice(startIdx, endIdx);
+
             const html = `
-                <div style="color: #64748b; margin-bottom: 20px; font-size: 1rem;">
-                    Showing ${sorted.length} ${DOM.facilityType.value}s near ${DOM.searchInput.value}
+                <div class="results-header">
+                    <span><i class="fas fa-list"></i> Showing ${startIdx + 1}-${Math.min(endIdx, sortedFacilities.length)} of ${sortedFacilities.length} ${DOM.facilityType.value}${sortedFacilities.length !== 1 ? 's' : ''}</span>
+                    <div style="position: relative;">
+                        <input type="text" 
+                               class="search-results-input" 
+                               id="searchWithinResults" 
+                               placeholder="Search within results..."
+                               style="max-width: 300px; padding-left: 45px;">
+                        <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                    </div>
                 </div>
                 <div class="facilities-grid">
-                    ${sorted.map(facility => `
-                        <div class="facility-card">
-                            <div class="facility-name">${facility.name}</div>
-
-                            <div class="detail-row">
-                                <strong>Address:</strong> ${facility.address}
-                                ${facility.district !== 'Rwanda' ? 
-                                    `<div style="font-size: 0.75rem; color: #6b7280; margin-top: 3px;">
-                                        ${facility.district}
-                                    </div>` : ''}
-                            </div>
-
-                            <div class="detail-row">
-                                <strong>Phone:</strong> ${facility.phone}
-                            </div>
-
-                            <div class="detail-row">
-                                <strong>Distance:</strong> ${facility.distance} km from search location
-                            </div>
-
-                            ${facility.website && facility.website !== 'Not available' ? `
-                                <div class="detail-row">
-                                    <strong>Website:</strong> <a href="${facility.website.startsWith('http') ? facility.website : 'https://' + facility.website}" target="_blank" style="color: #3b82f6;">${facility.website}</a>
-                                </div>
-                            ` : ''}
-
-                            <button 
-                                onclick="window.open('http://maps.google.com/maps?q=$${facility.lat},${facility.lon}', '_blank')"
-                                style="width: 100%; margin-top: 15px; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
-                                View on Map / Get Directions
-                            </button>
-                        </div>
-                    `).join('')}
+                    ${paginatedFacilities.map(facility => createFacilityCard(facility)).join('')}
                 </div>
             `;
 
-            // Display the new HTML content
             DOM.resultsContainer.innerHTML = html;
+
+            // Setup pagination
+            if (totalPages > 1) {
+                DOM.pagination.style.display = 'flex';
+                DOM.pageInfo.textContent = `Page ${state.currentPage} of ${totalPages}`;
+                DOM.prevPage.disabled = state.currentPage === 1;
+                DOM.nextPage.disabled = state.currentPage === totalPages;
+            } else {
+                DOM.pagination.style.display = 'none';
+            }
+
+            // Add search within results listener
+            const searchWithin = document.getElementById('searchWithinResults');
+            if (searchWithin) {
+                searchWithin.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase();
+                    const cards = document.querySelectorAll('.facility-card');
+                    
+                    cards.forEach(card => {
+                        const text = card.textContent.toLowerCase();
+                        card.style.display = text.includes(query) ? 'block' : 'none';
+                    });
+                });
+            }
         }
 
-        // Shows a friendly message when no search results are available
+        /** Generate facility card HTML template */
+        function createFacilityCard(facility) {
+            const isFavorite = state.favorites.includes(facility.id);
+            const favoriteIcon = isFavorite ? 'fas fa-heart' : 'far fa-heart';
+            const phoneLink = facility.phone !== 'Not available' 
+                ? `<a href="tel:${facility.phone}">${escapeHtml(facility.phone)}</a>` 
+                : facility.phone;
+
+            return `
+                <div class="facility-card" id="facility-${facility.id}">
+                    <button class="favorite-btn ${isFavorite ? 'favorited' : ''}" onclick="toggleFavorite(${facility.id})" aria-label="${isFavorite ? 'Remove from favorites' : 'Add to favorites'}">
+                        <i class="${favoriteIcon}"></i>
+                    </button>
+                    <div class="facility-name">${escapeHtml(facility.name)}</div>
+
+                    <div class="detail-row">
+                        <div>
+                            <strong>Address:</strong> ${escapeHtml(facility.address)}
+                            ${facility.district !== 'Rwanda' ? 
+                                `<div class="district-info">${escapeHtml(facility.district)}</div>` 
+                                : ''}
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div><strong>Phone:</strong> ${phoneLink}</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div><strong>Distance:</strong> ${facility.distance} km away</div>
+                    </div>
+
+                    ${facility.website ? `
+                        <div class="detail-row">
+                            <div>
+                                <strong>Website:</strong> 
+                                <a href="${escapeHtml(facility.website)}" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer">
+                                    Visit Website
+                                </a>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <button 
+                        class="map-button"
+                        onclick="window.open('https://www.google.com/maps/search/?api=1&query=${facility.lat},${facility.lon}', '_blank')"
+                        aria-label="View ${escapeHtml(facility.name)} on map">
+                        View on Google Maps
+                    </button>
+                </div>
+            `;
+        }
+
+        /** Favorite facility management */
+        function toggleFavorite(facilityId) {
+            const index = state.favorites.indexOf(facilityId);
+            
+            if (index > -1) {
+                state.favorites.splice(index, 1);
+            } else {
+                state.favorites.push(facilityId);
+            }
+            
+            localStorage.setItem('healthhub_favorites', JSON.stringify(state.favorites));
+            
+            // Update UI
+            const card = document.getElementById(`facility-${facilityId}`);
+            if (card) {
+                const btn = card.querySelector('.favorite-btn');
+                const icon = btn.querySelector('i');
+                const isFavorite = state.favorites.includes(facilityId);
+                
+                icon.className = isFavorite ? 'fas fa-heart' : 'far fa-heart';
+                btn.classList.toggle('favorited', isFavorite);
+                btn.setAttribute('aria-label', isFavorite ? 'Remove from favorites' : 'Add to favorites');
+            }
+        }
+
+        /** Display user's favorite facilities */
+        function showFavorites() {
+            if (state.favorites.length === 0) {
+                showAlert('<i class="fas fa-info-circle"></i> No favorites saved yet. Click the heart icon on facilities to save them!', 'info');
+                return;
+            }
+
+            const favoriteFacilities = state.facilities.filter(f => 
+                state.favorites.includes(f.id)
+            );
+
+            if (favoriteFacilities.length === 0) {
+                showAlert('<i class="fas fa-exclamation-triangle"></i> Your favorites are not in the current search results. Try searching again!', 'warning');
+                return;
+            }
+
+            state.filteredFacilities = favoriteFacilities;
+            state.currentPage = 1;
+            showAlert(`<i class="fas fa-heart"></i> Showing ${favoriteFacilities.length} favorite facilities`, 'info');
+            renderResults();
+        }
+
+        /** Reset all search filters and state */
+        function clearFilters() {
+            DOM.searchInput.value = '';
+            DOM.facilityType.value = 'hospital';
+            DOM.sortBy.value = 'distance';
+            DOM.maxDistance.value = '50';
+            state.facilities = [];
+            state.filteredFacilities = [];
+            clearAlerts();
+            renderEmptyState();
+        }
+
+
+
+        /** Pagination navigation handler */
+        function changePage(direction) {
+            state.currentPage += direction;
+            renderResults();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /** Empty state UI rendering */
         function renderEmptyState() {
             DOM.resultsContainer.innerHTML = `
-                <div style="background: white; border-radius: 15px; padding: 60px 40px; text-align: center;">
-                    <h3 style="font-size: 1.5rem; color: #1e293b; margin-bottom: 10px;">
-                        Find Medical Facilities Near You
-                    </h3>
-                    <p style="color: #64748b; margin-bottom: 20px;">
-                        Search for hospitals, clinics, pharmacies, and other medical facilities based on your exact location and preferences.
-                    </p>
-                    <div style="background: #f3f4f6; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto; text-align: left;">
+                <div class="empty-state">
+                    <h3>Find Medical Facilities in Rwanda</h3>
+                    <p>Search for hospitals, clinics, pharmacies, and dentists across Rwanda</p>
+                    <div class="instructions-box">
                         <strong>How to use:</strong><br><br>
-                        1. Enter a location (e.g., Kigali, Gasabo, Nyarugenge)<br>
-                        2. Select the type of facility you're looking for<br>
-                        3. Click "Search" to find nearby facilities<br>
-                        4. View distances, contact information, and get directions<br><br>
-                        <strong>Try searching for "Kigali, Rwanda" to get started!</strong>
+                        <div class="instruction-step">
+                            <div class="step-number">1</div>
+                            <div>Enter a location in Rwanda (e.g., Kigali, Gasabo, Nyarugenge)</div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">2</div>
+                            <div>Select the type of facility you're looking for</div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">3</div>
+                            <div>Set your maximum distance preference</div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">4</div>
+                            <div>Click "Search" to find nearby facilities</div>
+                        </div>
+                        <div class="instruction-step">
+                            <div class="step-number">5</div>
+                            <div>Save favorites by clicking the heart icon</div>
+                        </div>
+
+                        <br>
+                        <strong><i class="fas fa-lightbulb"></i> Try searching for "Kigali" to get started!</strong>
                     </div>
                 </div>
             `;
         }
 
-        // Shows the spinning circle while loading
+        /** Loading state UI display */
         function showLoader() {
-            DOM.resultsContainer.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+            DOM.resultsContainer.innerHTML = `
+                <div class="loader">
+                    <div class="spinner"></div>
+                    <div class="loader-text">Searching for medical facilities...</div>
+                </div>
+            `;
         }
 
-        // Shows a colored notification message at the top of the search box
+        /** User notification system */
         function showAlert(message, type) {
+            const iconMap = {
+                success: 'fas fa-check-circle',
+                info: 'fas fa-info-circle',
+                warning: 'fas fa-exclamation-triangle',
+                error: 'fas fa-times-circle'
+            };
+
             DOM.alertContainer.innerHTML = `
                 <div class="alert alert-${type}">
+                    <i class="${iconMap[type]}"></i>
                     <span>${message}</span>
                 </div>
             `;
-            // Clear the message after 5 seconds
-            if (type !== 'warning') {
-                setTimeout(clearAlerts, 5000);
+            
+            if (type === 'success' || type === 'info') {
+                setTimeout(() => {
+                    if (DOM.alertContainer.querySelector('.alert')?.innerHTML.includes(message.substring(0, 20))) {
+                        clearAlerts();
+                    }
+                }, 5000);
             }
         }
 
-        // Removes the notification message
+        /** Clear notification messages */
         function clearAlerts() {
             DOM.alertContainer.innerHTML = '';
         }
 
-        // Changes the search button text and disables it during a search
+        /** Search button state management */
         function updateButtonState(loading) {
             DOM.searchBtn.disabled = loading;
-            document.getElementById('searchText').textContent = loading ? 'Searching...' : 'Search';
+            const searchText = document.getElementById('searchText');
+            const icon = DOM.searchBtn.querySelector('i');
+            
+            if (loading) {
+                searchText.textContent = 'Searching...';
+                icon.className = 'fas fa-spinner fa-spin';
+            } else {
+                searchText.textContent = 'Search';
+                icon.className = 'fas fa-search';
+            }
         }
 
-        // --- 7. START THE APP ---
-        renderEmptyState(); // Show the welcome message when the page first loads
+        /** HTML sanitization utility */
+        function escapeHtml(text) {
+            if (text == null) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(text).replace(/[&<>"']/g, char => map[char]);
+        }
+
+        /** Application initialization */
+        function init() {
+            renderEmptyState();
+            renderSearchHistory();
+        }
+
+        init();
     </script>
 </body>
 </html>
