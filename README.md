@@ -193,7 +193,7 @@ Step 6: Verify Deployment
 bash# Test Web01
 curl http://web01.solomon-leek.tech/healthhub/
 
-# Test Web02
+## Test Web02
 curl http://web02.solomon-leek.tech/healthhub/
 
 ## Load Balancer Configuration
@@ -238,7 +238,7 @@ defaults
     errorfile 503 /etc/haproxy/errors/503.http
     errorfile 504 /etc/haproxy/errors/504.http
 
-# Frontend configuration
+## Frontend configuration
 frontend healthhub_frontend
     bind *:80
     default_backend healthhub_backend
@@ -247,7 +247,7 @@ frontend healthhub_frontend
     http-request set-header X-Forwarded-For %[src]
     http-request set-header X-Forwarded-Proto http
 
-# Backend configuration with health checks
+## Backend configuration with health checks
 backend healthhub_backend
     balance roundrobin
     option httpchk GET /healthhub/
@@ -257,7 +257,7 @@ backend healthhub_backend
     server web01 web01.solomon-leek.tech:80 check inter 2000 rise 2 fall 3
     server web02 web02.solomon-leek.tech:80 check inter 2000 rise 2 fall 3
 
-# Statistics page (optional but recommended)
+## Statistics page (optional but recommended)
 listen stats
     bind *:8080
     stats enable
@@ -268,11 +268,11 @@ Step 4: Validate and Restart HAProxy
 bash# Validate configuration
 sudo haproxy -c -f /etc/haproxy/haproxy.cfg
 
-# Restart HAProxy
+## Restart HAProxy
 sudo systemctl restart haproxy
 
-# Enable HAProxy to start on boot
+## Enable HAProxy to start on boot
 sudo systemctl enable haproxy
 
-# Check status
+## Check status
 sudo systemctl status haproxy
