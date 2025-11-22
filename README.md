@@ -2,6 +2,10 @@
 
 A web application for finding medical facilities based on the search location in Rwanda in regard to the user's preferences.
 
+## Repository
+
+**GitHub Repository:** https://github.com/solomon-211/Web_Infrastructures_Summative_Assignment.git
+
 ## Features
 
 - **Facility Search**: Find hospitals, clinics, pharmacies, and dental offices
@@ -13,12 +17,15 @@ A web application for finding medical facilities based on the search location in
 - **Admin Panel**: User management and system analytics
 
 ## Project Structure
+```
 HealthHub/
 ├── Index.html          # Main application
 └── README.md          # Documentation
+```
 
 ## Code Organization (within index.html)
 
+```
 index.html
 │
 ├── <head>
@@ -53,6 +60,7 @@ index.html
         ├── Cache Management
         ├── Error Handling
         └── Utility Functions
+```
 
 ## Technology Stack
 
@@ -142,7 +150,7 @@ bash# Create virtual host configuration
 sudo nano /etc/apache2/sites-available/healthhub.conf
 ### Add the following configuration:
 apache<VirtualHost *:80>
-    ServerName healthhub.yourdomain.com
+    ServerName healthhub.solomon-leek.tech
     DocumentRoot /var/www/html/healthhub
     
     <Directory /var/www/html/healthhub>
@@ -166,7 +174,7 @@ sudo nano /etc/nginx/sites-available/healthhub
 ### Add the following configuration:
 nginxserver {
     listen 80;
-    server_name healthhub.yourdomain.com;
+    server_name healthhub.solomon-leek.tech;
     root /var/www/html/healthhub;
     index index.html;
     
@@ -183,10 +191,10 @@ sudo nginx -t
 sudo systemctl reload nginx
 Step 6: Verify Deployment
 bash# Test Web01
-curl http://web01.yourdomain.com/healthhub/
+curl http://web01.solomon-leek.tech/healthhub/
 
 # Test Web02
-curl http://web02.yourdomain.com/healthhub/
+curl http://web02.solomon-leek.tech/healthhub/
 
 ## Load Balancer Configuration
 - The load balancer (Lb01) distributes incoming traffic between Web01 and Web02, ensuring high availability and optimal performance.
@@ -194,7 +202,7 @@ curl http://web02.yourdomain.com/healthhub/
 ## Configuration Steps
 - Step 1: Connect to Load Balancer
 
-ssh username@lb01.yourdomain.com
+ssh username@lb01.solomon-leek.tech
 
 - Step 2: Install HAProxy (if not already installed)
 sudo apt update
@@ -246,8 +254,8 @@ backend healthhub_backend
     http-check expect status 200
     
     # Server definitions
-    server web01 web01.yourdomain.com:80 check inter 2000 rise 2 fall 3
-    server web02 web02.yourdomain.com:80 check inter 2000 rise 2 fall 3
+    server web01 web01.solomon-leek.tech:80 check inter 2000 rise 2 fall 3
+    server web02 web02.solomon-leek.tech:80 check inter 2000 rise 2 fall 3
 
 # Statistics page (optional but recommended)
 listen stats
